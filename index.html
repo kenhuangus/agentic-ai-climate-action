@@ -173,7 +173,6 @@
           <button id="langZh" type="button">中文</button>
         </div>
         <button class="tbtn fs" id="fsBtn" type="button" data-k="fs">Full Screen</button>
-        <button class="tbtn cta" id="srcBtn" type="button" data-k="srcbtn">Sources ↗</button>
       </div>
     </header>
 
@@ -188,7 +187,6 @@
         <div class="presenter"><span data-k="s1.by">Presented by</span> <b>Ken Huang, CISSP</b><br /><span data-k="s1.role">CEO, DistributedApps.ai · Adjunct Professor, University of San Francisco</span></div>
         <div class="cover-btns">
           <button class="btn primary" id="startBtn" type="button" data-k="s1.start">Start Presentation →</button>
-          <button class="btn" id="coverSrcBtn" type="button" data-k="s1.src">Sources &amp; Open Questions</button>
         </div>
       </section>
 
@@ -390,32 +388,12 @@
         </div>
       </section>
 
-      <!-- 10 · SOURCES & OPEN QUESTIONS -->
-      <section class="slide light" data-title-en="Sources &amp; Open Questions" data-title-zh="来源与未决问题">
-        <div class="kicker" data-k="s15.kick">Sources</div>
-        <h1 class="head" data-k="s15.head">Sources &amp; Open Questions</h1>
-        <p class="sub" data-k="s15.sub">Only 2026 references are used in this edition. Modelled and vendor figures are labelled on their slides; what could not be verified is listed openly below.</p>
-        <div class="cols">
-          <div class="panel blue">
-            <h3><span class="badge blue" data-k="s15.badge">Sources</span> <span data-k="s15.ph">2026 only, in order of use</span></h3>
-            <div class="src-cols">
-              <span class="srcline"><b>GAICA Women Summit 2026</b> — summit programme &amp; speaker listing, WECI (2026)</span>
-              <a href="https://www.databricks.com/blog/agentic-ai-vs-generative-ai" target="_blank" rel="noopener"><b>Databricks</b> — Agentic AI vs Generative AI (updated Nov 2026) <span class="arr">↗</span></a>
-              <a href="https://blog.google/innovation-and-ai/products/google-ai-global-flood-forecasting/" target="_blank" rel="noopener"><b>Google</b> — Flood Hub (updated Jan 2026) <span class="arr">↗</span></a>
-              <a href="https://www.ap.org/news-highlights/spotlights/2026/states-across-the-wildfire-prone-western-us-are-using-ai-for-early-detection/" target="_blank" rel="noopener"><b>AP</b> — Wildfire AI / ALERTCalifornia, May 2026 <span class="arr">↗</span></a>
-              <a href="https://sites.research.google/greenlight/" target="_blank" rel="noopener"><b>Google Research</b> — Project Green Light (2026) <span class="arr">↗</span></a>
-              <a href="https://doi.org/10.1017/wet.2025.10056" target="_blank" rel="noopener"><b>Avent et al.</b> — See &amp; Spray trial, <i>Weed Technology</i> (2026) <span class="arr">↗</span></a>
-              <a href="https://www.iea.org/reports/energy-and-ai/energy-supply-for-ai" target="_blank" rel="noopener"><b>IEA</b> — Energy and AI, incl. “Key Questions”, Apr 2026 <span class="arr">↗</span></a>
-            </div>
-          </div>
-          <div class="panel red">
-            <h3><span class="badge red" data-k="s15.badge2">Open Questions</span> <span data-k="s15.ph2">Not verified — stated plainly</span></h3>
-            <ul class="pts warn">
-              <li data-k="s15.q3"><b>Baselines differ</b> — vendor and modelled percentages are labelled on their slides; they are directionally useful, not directly comparable, and none is independently audited.</li>
-            </ul>
-            <div class="note-box" data-k="s15.note"><b>Invite challenge:</b> if a number on any slide cannot be traced to a source above, treat the slide — not the source — as wrong, and ask.</div>
-          </div>
-        </div>
+      <!-- 10 · Q&A -->
+      <section class="slide dark" data-title-en="Q&amp;A" data-title-zh="问答环节">
+        <div class="kicker" data-k="qa.kick">Thank You</div>
+        <h1 class="cover-title">Q<span class="grad">&amp;</span>A</h1>
+        <p class="cover-sub" data-k="qa.sub">Questions &amp; Answers</p>
+        <div class="presenter"><b>Ken Huang, CISSP</b><br /><span data-k="qa.event">GAICA Women Summit 2026 · 18 December 2026 · The GrEEK Campus, Cairo</span></div>
       </section>
 
     </main>
@@ -468,8 +446,6 @@
         prevBtn.addEventListener('click', function(){ go(cur - 1); });
         nextBtn.addEventListener('click', function(){ go(cur + 1); });
         document.getElementById('startBtn').addEventListener('click', function(){ go(1); });
-        document.getElementById('srcBtn').addEventListener('click', function(){ go(total - 1); });
-        document.getElementById('coverSrcBtn').addEventListener('click', function(){ go(total - 1); });
         document.getElementById('fsBtn').addEventListener('click', function(){
           try {
             if (document.fullscreenElement) { document.exitFullscreen(); }
@@ -495,7 +471,7 @@
         var enCache = {};
         document.querySelectorAll('[data-k]').forEach(function(el){ enCache[el.getAttribute('data-k')] = el.innerHTML; });
         var ZH = {
-          "brand":"智能体 AI · 气候行动","fs":"全屏","srcbtn":"来源 ↗","prev":"‹ 上一页","next":"下一页 ›",
+          "brand":"智能体 AI · 气候行动","fs":"全屏","prev":"‹ 上一页","next":"下一页 ›",
           "s1.pill":"GAICA 女性峰会 2026 · 绿色 AI 助力气候行动",
           "s1.t1":"智能体 AI","s1.t2":"助力气候行动",
           "s1.p1":"第一部分","s1.p1w":"应用","s1.p2":"第二部分","s1.p2w":"足迹","s1.p3":"第三部分","s1.p3w":"护栏",
@@ -510,7 +486,7 @@
           "g.b1":"<b>可持续与气候正义</b>——尊重环境的创新，以及气候行动中的公平参与。",
           "g.b2":"<b>女性是气候解决方案的建设者</b>——女性亲自设计并交付解决方案，而不只是聆听。",
           "g.b3":"<b>负责任且可持续的 AI</b>——绿色 AI 与气候智能，并为 AI 自身的足迹负责。",
-          "s1.start":"开始演示 →","s1.src":"来源与未决问题",
+          "s1.start":"开始演示 →",
           "in.kick":"讲师","in.h2":"黄连金 (Ken Huang), CISSP","in.b1":"🎓 旧金山大学 (USF) 客座教授 · 专著出版于 Cambridge、Springer、Wiley、Packt、机工社、北大社","in.b2":"🛡️ CSA Fellow（MAESTRO、AICM）· OWASP AIVSS 负责人","in.b3":"🚀 DistributedApps.ai CEO","in.pubt":"我的书籍由学术与全球出版社出版","in.pubs":"国际顶级大学出版社、全球知名学术与国家级骨干出版社","in.pc":"剑桥大学出版社","in.ps":"斯普林格 (Springer)","in.pw":"威立 (Wiley)","in.pp":"Packt 出版社","in.pcmp":"机械工业出版社","in.ppk":"北京大学出版社",
           "s3.kick":"定义","s3.head":"智能体会行动，聊天机器人只会回答。",
           "s3.badge":"定义",
@@ -565,12 +541,8 @@
           "s14.kick":"总结","s14.head":"潜力真实存在——前提是被引导",
           "s14.badge":"批评",
           "s14.b1":"<b>把区间上限读作潜力，而非预测</b>——最大的节省说法依赖乐观的普及假设。",
-          "s15.kick":"来源","s15.head":"来源与未决问题",
-          "s15.sub":"本版仅使用 2026 年的参考。模型估算与厂商数字已在各自幻灯片上标注；无法验证的内容在下方公开列出。",
-          "s15.badge":"来源","s15.ph":"仅 2026 年，按使用顺序",
-          "s15.badge2":"未决问题","s15.ph2":"未验证——如实说明",
-          "s15.q3":"<b>基线各不相同</b>——厂商与模型估算的百分比已在各自幻灯片上标注；它们在方向上有参考价值，但不可直接比较，且未经独立审计。",
-          "s15.note":"<b>欢迎质疑：</b>如果任何一页上的数字无法追溯到上述来源，应视为该页有误——请提出质疑。"
+          "qa.kick":"谢谢","qa.sub":"提问与讨论",
+          "qa.event":"GAICA 女性峰会 2026 · 2026 年 12 月 18 日 · 开罗 The GrEEK Campus"
         };
 
         function setLang(l){
