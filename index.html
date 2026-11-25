@@ -1,0 +1,877 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light" />
+    <link rel="icon" href="data:," />
+    <title>Agentic AI for Climate Action — Ken Huang</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Caveat:wght@600;700&display=swap" rel="stylesheet" />
+    <style>
+      :root{
+        --dark:#0a0e14; --dark2:#0d1219; --bar:#0b0f16;
+        --cream:#faf6ec; --paper:#ffffff;
+        --ink:#131922; --body:#2a3240; --muted:#5d6774;
+        --orange:#f96a1b; --orange-d:#e85d0c; --amber:#f6a21e;
+        --green:#1e9e4f; --blue:#1c6fb8; --teal:#0e9594; --purple:#8b3dff; --red:#d43a2f;
+        --line:#e7dfcd;
+        --sans:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;
+        --script:"Caveat",cursive;
+      }
+      *{box-sizing:border-box}
+      html,body{height:100%}
+      body{margin:0;font-family:var(--sans);background:var(--dark);color:var(--ink);display:flex;flex-direction:column;overflow:hidden}
+      button{font-family:var(--sans);cursor:pointer}
+      button,[role="button"]{min-height:2.25rem}
+
+      /* ---------- top bar ---------- */
+      .topbar{flex:0 0 auto;height:52px;background:var(--bar);color:#fff;display:flex;align-items:center;gap:14px;padding:0 14px;border-bottom:1px solid #1c2431;z-index:20}
+      .brand{display:flex;align-items:center;gap:9px;font-weight:800;letter-spacing:.06em;font-size:13px;white-space:nowrap}
+      .brand .mark{width:26px;height:26px;border-radius:6px;background:#fff;display:grid;place-items:center;flex:0 0 auto}
+      .top-title{flex:1;text-align:center;font-family:var(--script);font-weight:700;font-size:clamp(17px,2.2vw,24px);color:var(--amber);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 6px}
+      .top-actions{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+      .lang-toggle{display:flex;background:#1a222f;border-radius:999px;padding:3px;gap:2px}
+      .lang-toggle button{border:0;background:transparent;color:#aeb8c6;font-weight:700;font-size:12.5px;padding:5px 12px;border-radius:999px;min-height:1.9rem}
+      .lang-toggle button.on{background:var(--orange);color:#fff}
+      .tbtn{border:1px solid #2a3547;background:#141b27;color:#e8edf4;font-weight:600;font-size:13px;padding:7px 14px;border-radius:999px;white-space:nowrap}
+      .tbtn:hover{border-color:#3d4c66}
+      .tbtn.cta{background:var(--orange);border-color:var(--orange);color:#fff;font-weight:700}
+      .tbtn.cta:hover{background:var(--orange-d)}
+      @media (max-width:760px){ .brand span.bt{display:none} .tbtn.fs{display:none} }
+
+      /* ---------- stage / slides ---------- */
+      .stage{flex:1 1 auto;position:relative;min-height:0}
+      .slide{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;display:none;padding:30px clamp(16px,4.5vw,68px) 44px}
+      .slide.active{display:block}
+      .slide.light{background:var(--cream)}
+      .slide.dark{background:radial-gradient(1100px 500px at 78% -10%,#16283f 0%,transparent 55%),radial-gradient(800px 420px at 8% 110%,#12251c 0%,transparent 55%),var(--dark);color:#eef2f7;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding-top:16px}
+      .slide.dark::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);background-size:56px 56px;pointer-events:none}
+      .slide.dark>*{position:relative}
+
+      .kicker{font-family:var(--script);font-weight:700;font-size:clamp(24px,2.6vw,34px);color:var(--orange);line-height:1;margin-bottom:6px}
+      h1.head{font-size:clamp(30px,4.3vw,56px);font-weight:800;letter-spacing:-.015em;line-height:1.04;margin:0 0 10px;color:var(--ink)}
+      .sub{font-size:clamp(16px,1.7vw,22.5px);color:var(--muted);line-height:1.4;margin:0 0 22px;max-width:1150px;font-weight:500}
+
+      .cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.18fr);gap:20px;align-items:stretch}
+      @media (max-width:900px){ .cols{grid-template-columns:1fr} }
+      .panel{background:var(--paper);border-radius:12px;box-shadow:0 1px 3px rgba(20,25,35,.08),0 10px 30px rgba(20,25,35,.05);padding:22px 24px 20px;border-left:5px solid var(--orange)}
+      .panel.green{border-left-color:var(--green)} .panel.blue{border-left-color:var(--blue)}
+      .panel.teal{border-left-color:var(--teal)} .panel.red{border-left-color:var(--red)} .panel.amber{border-left-color:var(--amber)}
+      .panel h3{margin:0 0 12px;font-size:clamp(19px,1.9vw,25px);font-weight:800;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+      .badge{display:inline-block;color:#fff;font-size:11.5px;font-weight:800;letter-spacing:.07em;padding:4px 9px;border-radius:5px;background:var(--orange);text-transform:uppercase}
+      .badge.green{background:var(--green)} .badge.blue{background:var(--blue)} .badge.teal{background:var(--teal)} .badge.red{background:var(--red)} .badge.amber{background:#d98a06}
+      ul.pts{list-style:none;margin:0;padding:0}
+      ul.pts li{position:relative;padding:7px 0 7px 22px;font-size:clamp(15px,1.45vw,18.5px);line-height:1.45;color:var(--body);border-bottom:1px dashed #eee5cf}
+      ul.pts li:last-child{border-bottom:0}
+      ul.pts li::before{content:"▸";position:absolute;left:2px;top:7px;color:var(--orange);font-weight:900}
+      ul.pts.tick li::before{content:"✓";color:var(--green)}
+      ul.pts.cross li::before{content:"✗";color:var(--red)}
+      ul.pts.warn li::before{content:"▸";color:var(--amber)}
+      ul.pts li b{color:var(--ink)}
+      .src{margin-top:14px;font-size:12.5px;line-height:1.5;color:#8a93a1}
+      .src a{color:#6d7684;text-decoration:underline;text-underline-offset:2px}
+      .note-box{margin-top:14px;background:#eef5ff;border:1px solid #cfe3f7;border-radius:10px;padding:12px 15px;font-size:14.5px;line-height:1.5;color:#274b73}
+      .note-box.red{background:#fdf0ee;border-color:#f3cfc9;color:#7c2d22}
+      .note-box.green{background:#edf7f0;border-color:#cdeeda;color:#14532d}
+
+      /* diagram panel */
+      .diagram{background:var(--paper);border-radius:12px;box-shadow:0 1px 3px rgba(20,25,35,.08),0 10px 30px rgba(20,25,35,.05);padding:24px;display:flex;flex-direction:column;justify-content:center;gap:12px}
+      .d-title{font-weight:800;font-size:15px;letter-spacing:.02em;text-align:center;color:var(--ink)}
+      .dbox{border:2px solid var(--blue);color:var(--blue);border-radius:9px;padding:11px 13px;text-align:center;font-weight:700;font-size:clamp(13.5px,1.35vw,16.5px);line-height:1.35;background:#fff}
+      .dbox small{display:block;font-weight:600;color:var(--muted);font-size:.82em;margin-top:2px}
+      .dbox.orange{border-color:var(--orange);color:var(--orange-d)}
+      .dbox.green{border-color:var(--green);color:var(--green)}
+      .dbox.teal{border-color:var(--teal);color:var(--teal)}
+      .dbox.purple{border-color:var(--purple);color:var(--purple)}
+      .dbox.red{border-color:var(--red);color:var(--red)}
+      .dbox.gray{border-color:#3c4656;color:#3c4656}
+      .dbox.fill-green{background:#eefaf2}.dbox.fill-red{background:#fdf1ef}.dbox.fill-blue{background:#eef5fd}.dbox.fill-amber{background:#fff7e8}
+      .arrow{align-self:center;font-size:20px;color:#39424f;line-height:1;font-weight:900}
+      .arrow.r{transform:none}
+      .drow{display:flex;align-items:stretch;gap:10px}
+      .drow>.dbox{flex:1}
+      .drow>.arrow{align-self:center}
+      @media (max-width:560px){ .drow{flex-direction:column} .drow>.arrow{transform:rotate(90deg)} }
+      .stat-big{font-size:clamp(26px,3vw,40px);font-weight:900;line-height:1;letter-spacing:-.01em}
+      .loop-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center}
+      .loop-grid .arrow{font-size:22px}
+      table.cmp{width:100%;border-collapse:collapse;font-size:clamp(13.5px,1.3vw,16px)}
+      table.cmp th,table.cmp td{border:1.6px solid #d8d2c0;padding:8px 10px;text-align:left;vertical-align:top;line-height:1.35}
+      table.cmp th{background:#f4efe0;font-weight:800}
+      table.cmp td:first-child{font-weight:700;color:var(--muted);width:24%}
+      .hbar-wrap{margin:6px 0}
+      .hbar-lab{display:flex;justify-content:space-between;font-size:13.5px;font-weight:700;margin-bottom:4px;gap:8px;flex-wrap:wrap}
+      .hbar{height:26px;border-radius:5px;background:#e9e4d2;position:relative;overflow:hidden}
+      .hbar>i{position:absolute;inset:0 auto 0 0;border-radius:5px}
+
+      /* cover */
+      .cover-pill{font-family:var(--script);font-weight:700;font-size:clamp(19px,2.3vw,27px);color:var(--amber);border:1.6px dashed rgba(246,162,30,.65);border-radius:999px;padding:7px 22px;margin-bottom:26px}
+      .cover-title{font-size:clamp(38px,7.2vw,96px);font-weight:900;letter-spacing:-.01em;line-height:1.02;margin:0;text-transform:uppercase}
+      .cover-title .grad{background:linear-gradient(92deg,#ffd9a0,#f6a21e 55%,#f96a1b);-webkit-background-clip:text;background-clip:text;color:transparent}
+      .cover-parts{font-family:var(--script);font-weight:700;font-size:clamp(22px,3vw,36px);margin:20px 0 6px;color:#dbe4ee}
+      .cover-parts b{color:var(--amber);font-weight:700}
+      .cover-sub{font-size:clamp(16px,2vw,24px);color:#aeb9c8;line-height:1.5;max-width:820px;margin:14px auto 0}
+      .cover-sub b{color:#fff}
+      .presenter{margin-top:34px;font-size:clamp(15px,1.7vw,20px);color:#8d99ab;line-height:1.55}
+      .presenter b{color:#eef2f7}
+      .cover-btns{display:flex;gap:12px;justify-content:center;margin-top:28px;flex-wrap:wrap}
+      .btn{border-radius:999px;padding:12px 24px;font-size:15px;font-weight:700;border:1px solid #2a3547;background:#141b27;color:#e8edf4}
+      .btn.primary{background:var(--orange);border-color:var(--orange);color:#fff;box-shadow:0 8px 24px rgba(249,106,27,.35)}
+      .btn.primary:hover{background:var(--orange-d)}
+      .cover-foot{margin-top:26px;font-size:12.5px;color:#66738a}
+
+      /* sources slide */
+      .src-cols{display:grid;grid-template-columns:1fr 1fr;gap:8px 26px}
+      @media (max-width:900px){ .src-cols{grid-template-columns:1fr} }
+      .src-cols a{display:block;padding:7px 0;border-bottom:1px dashed #eee5cf;color:var(--body);text-decoration:none;font-size:14.5px;line-height:1.4}
+      .src-cols a:hover{color:var(--orange-d)}
+      .src-cols a b{color:var(--ink)}
+      .src-cols a .arr{color:var(--orange);font-weight:900}
+
+      /* ---------- bottom nav ---------- */
+      .navbar{flex:0 0 auto;background:var(--bar);display:flex;align-items:center;justify-content:center;gap:16px;padding:9px 14px calc(9px + env(safe-area-inset-bottom));position:relative;z-index:20}
+      .navbtn{border:1px solid #2a3547;background:#141b27;color:#e8edf4;font-weight:700;font-size:14px;padding:9px 20px;border-radius:999px;min-height:2.5rem}
+      .navbtn.next{background:var(--orange);border-color:var(--orange);color:#fff;box-shadow:0 6px 18px rgba(249,106,27,.35)}
+      .navbtn:disabled{opacity:.35;cursor:default;box-shadow:none}
+      .dots{display:flex;gap:7px;align-items:center;flex-wrap:wrap;justify-content:center}
+      .dots button{width:11px;height:11px;min-height:11px;border-radius:50%;border:0;background:#39445a;padding:0}
+      .dots button.on{background:var(--orange);width:13px;height:13px}
+      .counter{font-family:var(--script);font-weight:700;font-size:20px;color:#aeb8c6;min-width:52px;text-align:center}
+      .progress{flex:0 0 auto;height:3px;background:#1a222f}
+      .progress>i{display:block;height:100%;background:var(--orange);width:7%;transition:width .3s ease}
+      @media (max-width:640px){ .dots{display:none} }
+      @media print{
+        body{overflow:visible;display:block}
+        .topbar,.navbar,.progress{display:none}
+        .slide{position:static;display:block !important;page-break-after:always;overflow:visible}
+        .slide.dark{min-height:90vh}
+      }
+    </style>
+  </head>
+  <body>
+
+    <header class="topbar">
+      <div class="brand">
+        <span class="mark" aria-hidden="true">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 21c0-6 1-10 6-14 1.8-1.4 4-2 4-2s-.3 3.4-1.6 5.8C18.3 14.7 15.5 17 12 21Z" fill="#1e9e4f"/><path d="M12 21c0-4.5-.8-7.5-4.2-10.6C6.2 8.9 4 8.2 4 8.2s.2 2.8 1.3 4.8C7 16 9.2 18.4 12 21Z" fill="#f96a1b"/></svg>
+        </span>
+        <span class="bt" data-k="brand">AGENTIC AI · CLIMATE ACTION</span>
+      </div>
+      <div class="top-title" id="topTitle">Agentic AI for Climate Action</div>
+      <div class="top-actions">
+        <div class="lang-toggle" role="group" aria-label="Language">
+          <button id="langEn" class="on" type="button">EN</button>
+          <button id="langZh" type="button">中文</button>
+        </div>
+        <button class="tbtn fs" id="fsBtn" type="button" data-k="fs">Full Screen</button>
+        <button class="tbtn cta" id="srcBtn" type="button" data-k="srcbtn">Sources ↗</button>
+      </div>
+    </header>
+
+    <main class="stage" id="stage">
+
+      <!-- 1 · COVER -->
+      <section class="slide dark active" data-title-en="Agentic AI for Climate Action" data-title-zh="智能体 AI 助力气候行动">
+        <div class="cover-pill" data-k="s1.pill">Green AI · Practical Applications · Responsible Deployment</div>
+        <h1 class="cover-title"><span data-k="s1.t1">Agentic AI for</span><br /><span class="grad" data-k="s1.t2">Climate Action</span></h1>
+        <div class="cover-parts"><b data-k="s1.p1">Part 1</b> <span data-k="s1.p1w">Applications</span> · <b data-k="s1.p2">Part 2</b> <span data-k="s1.p2w">Footprint</span> · <b data-k="s1.p3">Part 3</b> <span data-k="s1.p3w">Guardrails</span></div>
+        <p class="cover-sub" data-k="s1.sub">Floods affect <b>~1.5 billion people</b> and cost <b>~$50bn a year</b>. Climate change is a loop, not a question — sense, decide, act, re-sense. That loop is exactly what agentic AI runs.</p>
+        <div class="presenter"><span data-k="s1.by">Presented by</span> <b>Ken Huang, CISSP</b><br /><span data-k="s1.role">Adjunct Professor, USF · CSA AI Safety Co-Chair · CEO, DistributedApps.ai</span></div>
+        <div class="cover-btns">
+          <button class="btn primary" id="startBtn" type="button" data-k="s1.start">Start Presentation →</button>
+          <button class="btn" id="coverSrcBtn" type="button" data-k="s1.src">Sources &amp; Open Questions</button>
+        </div>
+        <div class="cover-foot" data-k="s1.foot">Stakes figures: Google Flood Hub (2024). Every number in this deck carries its source on its slide.</div>
+      </section>
+
+      <!-- 2 · DEFINITION -->
+      <section class="slide light" data-title-en="What Agentic AI Is — and Is Not" data-title-zh="什么是智能体 AI">
+        <div class="kicker" data-k="s2.kick">The Definition</div>
+        <h1 class="head" data-k="s2.head">Agents Act. Chatbots Answer.</h1>
+        <p class="sub" data-k="s2.sub">One definition for the whole talk: an agent perceives, plans, uses tools and acts — then checks the result and iterates.</p>
+        <div class="cols">
+          <div class="panel">
+            <h3><span class="badge" data-k="s2.badge">Definition</span> <span data-k="s2.ph">Perceive → plan → act → reflect</span></h3>
+            <ul class="pts">
+              <li data-k="s2.b1"><b>Agentic AI</b> — “autonomous systems perceive their environment, plan multi-step action sequences, and execute those plans with minimal human intervention.” (Databricks, 2026)</li>
+              <li data-k="s2.b2">A chatbot's job ends at the <b>answer</b>. An agent's job ends at the <b>outcome</b> — a chiller adjusted, a battery re-dispatched, a plume flagged.</li>
+              <li data-k="s2.b3">The human sets the <b>goal and the guardrails</b> — not every step in between.</li>
+              <li data-k="s2.b4">There is still <b>no single agreed definition</b> (BetaNews, 2026) — so this deck fixes one, here, and sticks to it.</li>
+            </ul>
+            <div class="src"><span data-k="s2.src">Sources: Databricks, “Agentic AI vs Generative AI” (updated Nov 2026) · Neo4j (2025) · BetaNews, “What Is Agentic AI?” (2026) — full links on slide 14.</span></div>
+          </div>
+          <div class="diagram">
+            <div class="d-title" data-k="s2.dt">THE AGENT LOOP</div>
+            <div class="loop-grid">
+              <div class="dbox blue" data-k="s2.d1">Perceive<small>sensors · satellites · meters</small></div>
+              <div class="arrow">→</div>
+              <div class="dbox teal" data-k="s2.d2">Plan<small>multi-step, toward a goal</small></div>
+              <div class="dbox purple" data-k="s2.d4">Reflect<small>did it work? adjust</small></div>
+              <div class="arrow">←</div>
+              <div class="dbox orange" data-k="s2.d3">Act<small>APIs · controls · actuators</small></div>
+            </div>
+            <div class="dbox red fill-red" data-k="s2.d5">The failure mode changes: wrong <i>content</i> → wrong <i>action</i>, with real-world consequences</div>
+            <table class="cmp">
+              <tr><th></th><th data-k="s2.th1">Chatbot</th><th data-k="s2.th2">Agent</th></tr>
+              <tr><td data-k="s2.r1a">Trigger</td><td data-k="s2.r1b">Your prompt</td><td data-k="s2.r1c">Goal, event, schedule</td></tr>
+              <tr><td data-k="s2.r2a">Memory</td><td data-k="s2.r2b">One session</td><td data-k="s2.r2c">Persistent across runs</td></tr>
+              <tr><td data-k="s2.r3a">Human role</td><td data-k="s2.r3b">Every prompt</td><td data-k="s2.r3c">Goal level + veto</td></tr>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3 · WHY NOW -->
+      <section class="slide light" data-title-en="Why Now: Three Enablers" data-title-zh="为什么是现在：三大推动力">
+        <div class="kicker" data-k="s3.kick">Why Now</div>
+        <h1 class="head" data-k="s3.head">Climate Work Is a Loop</h1>
+        <p class="sub" data-k="s3.sub">Grids, buildings, farms and forests don't wait for a prompt. They need systems that run continuously — and three enablers just made that practical.</p>
+        <div class="cols">
+          <div class="panel green">
+            <h3><span class="badge green" data-k="s3.badge">Enablers</span> <span data-k="s3.ph">Three things changed</span></h3>
+            <ul class="pts tick">
+              <li data-k="s3.b1"><b>Cheap, continuous sensing</b> — ~1,300 wildfire cameras in California; satellites scanning for methane; 7 million smart water meters at SUEZ alone.</li>
+              <li data-k="s3.b2"><b>Forecast models</b> — GraphCast produces a 10-day global weather forecast in under a minute (DeepMind, <i>Science</i>, 2023).</li>
+              <li data-k="s3.b3"><b>Tools an agent can call</b> — APIs, building controls, grid dispatch — with bounds on what the agent may touch.</li>
+              <li data-k="s3.b4"><b>UN framing (TEC, July 2025):</b> AI can optimise grids, forecast demand and extreme weather, and support biodiversity — if governance and data keep up.</li>
+            </ul>
+            <div class="src"><span data-k="s3.src">Sources: UN Technology Executive Committee paper, July 2025 (via Global Government Forum) · DeepMind GraphCast, 2023 — slide 14.</span></div>
+          </div>
+          <div class="diagram">
+            <div class="drow">
+              <div class="dbox blue" data-k="s3.d1">Sensors &amp; satellites<small>continuous climate data</small></div>
+              <div class="dbox teal" data-k="s3.d2">Forecast models<small>GraphCast · GenCast · AIFS</small></div>
+              <div class="dbox purple" data-k="s3.d3">Tools &amp; controls<small>APIs · actuators · MCP</small></div>
+            </div>
+            <div class="arrow">↓</div>
+            <div class="dbox green fill-green"><span class="stat-big">24 / 7</span><small data-k="s3.d4s">Sense → decide → act → re-sense — every few minutes, not every meeting</small></div>
+            <div class="dbox gray" data-k="s3.d5">A chatbot can <i>write</i> a climate plan. Only an agent can <i>run</i> one.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4 · CLUSTER 1: SEE SOONER -->
+      <section class="slide light" data-title-en="Cluster 1 · See Sooner: Forecasting &amp; Early Warning" data-title-zh="集群一 · 更早看见：预报与预警">
+        <div class="kicker" data-k="s4.kick">Cluster 1 · See Sooner</div>
+        <h1 class="head" data-k="s4.head">Forecast First, Respond Early</h1>
+        <p class="sub" data-k="s4.sub">The best-evidenced wins in climate AI are seeing sooner — floods, fire and weather, days or hours before they hit.</p>
+        <div class="cols">
+          <div class="panel blue">
+            <h3><span class="badge blue" data-k="s4.badge">Early Warning</span> <span data-k="s4.ph">Verified deployments</span></h3>
+            <ul class="pts">
+              <li data-k="s4.b1"><b>Google Flood Hub</b> — riverine flood forecasts up to <b>7 days</b> ahead; expanded Nov 2024 to <b>100 countries, 700M people</b> (<i>Nature</i>, Mar 2024).</li>
+              <li data-k="s4.b2"><b>ALERTCalifornia</b> — ~1,300 cameras; in 2025 it flagged fires <b>before any 911 call &gt;50% of the time</b>; the Trotter Fire was held to <b>52 acres</b> vs ~4,000 projected (CAL FIRE data).</li>
+              <li data-k="s4.b3"><b>GraphCast</b> — beat ECMWF's flagship forecast on <b>&gt;90% of 1,380</b> test variables (DeepMind, <i>Science</i>, 2023).</li>
+              <li data-k="s4.b4">Context: early warning systems <i>in general</i> cut flood fatalities by up to <b>43%</b> — a general figure, not Flood-Hub-specific (ICTWorks, 2024).</li>
+            </ul>
+            <div class="src"><span data-k="s4.src">Sources: Google Flood Hub blog (2024, updated Jan 2026) · AP wildfire report, 1 May 2026 · DeepMind (2023) — slide 14.</span></div>
+          </div>
+          <div class="diagram">
+            <div class="d-title" data-k="s4.dt">SENSE → WARN → ACT</div>
+            <div class="drow">
+              <div class="dbox blue" data-k="s4.d1">Satellites &amp; cameras<small>observe continuously</small></div>
+              <div class="arrow">→</div>
+              <div class="dbox teal" data-k="s4.d2">AI forecast<small>days / hours ahead</small></div>
+              <div class="arrow">→</div>
+              <div class="dbox green" data-k="s4.d3">Alert &amp; act<small>evacuate · dispatch · pre-position</small></div>
+            </div>
+            <div class="drow">
+              <div class="dbox fill-blue"><span class="stat-big" style="color:var(--blue)">7 days</span><small data-k="s4.d4">flood forecast lead time</small></div>
+              <div class="dbox fill-blue"><span class="stat-big" style="color:var(--blue)">&gt;50%</span><small data-k="s4.d5">of 2025 fires flagged before 911</small></div>
+              <div class="dbox fill-blue"><span class="stat-big" style="color:var(--blue)">52</span><small data-k="s4.d6">acres — Trotter Fire, vs ~4,000 projected</small></div>
+            </div>
+            <div class="dbox gray" data-k="s4.d7">Human dispatchers still review every camera alert before engines roll — fog, dust and steam cause false positives.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5 · CLUSTER 2: RUN CLEANER -->
+      <section class="slide light" data-title-en="Cluster 2 · Run Cleaner: Energy, Buildings, Transport" data-title-zh="集群二 · 更清洁地运行：能源、建筑、交通">
+        <div class="kicker" data-k="s5.kick">Cluster 2 · Run Cleaner</div>
+        <h1 class="head" data-k="s5.head">Optimise What Already Exists</h1>
+        <p class="sub" data-k="s5.sub">Agents earn their keep squeezing waste out of grids, buildings and traffic. Every figure below is labelled by who reported it.</p>
+        <div class="cols">
+          <div class="panel">
+            <h3><span class="badge" data-k="s5.badge">Energy</span> <span data-k="s5.ph">Four deployments</span></h3>
+            <ul class="pts">
+              <li data-k="s5.b1"><b>DeepMind wind</b> (company-reported): <b>+20% value</b> from 700 MW of wind, forecasting output 36 hours ahead.</li>
+              <li data-k="s5.b2"><b>DeepMind cooling</b> (company-reported, 2016): <b>−40% cooling energy</b> in Google data centres; from 2018 it set cooling directly every 5 minutes, inside safety bounds.</li>
+              <li data-k="s5.b3"><b>BrainBox AI HVAC</b> (vendor-reported): up to <b>−25% energy</b> and −40% GHG in commercial buildings (Trane Technologies).</li>
+              <li data-k="s5.b4"><b>Google Green Light</b> (modelled, not measured): up to <b>−30% stops, −10% emissions</b> at intersections in 100+ cities — city engineers approve each change.</li>
+            </ul>
+            <div class="src"><span data-k="s5.src">Sources: Google (2016) · DeepMind wind via secondary summary · Trane / BrainBox · Google Green Light — slide 14. Do not add the 2016 and 2018 cooling figures; different stages, different denominators.</span></div>
+          </div>
+          <div class="diagram">
+            <div class="drow">
+              <div class="dbox blue"><span class="stat-big">+20%</span><small data-k="s5.d1">wind energy value · 700 MW (company-reported)</small></div>
+              <div class="dbox teal"><span class="stat-big">−40%</span><small data-k="s5.d2">data-centre cooling energy (company-reported)</small></div>
+            </div>
+            <div class="drow">
+              <div class="dbox green"><span class="stat-big">−25%</span><small data-k="s5.d3">building HVAC energy, up to (vendor-reported)</small></div>
+              <div class="dbox orange"><span class="stat-big">−30%</span><small data-k="s5.d4">intersection stops, up to (modelled)</small></div>
+            </div>
+            <div class="dbox gray" data-k="s5.d5">Pattern in all four: the agent optimises a <i>bounded</i> physical system — and a human or a safety controller can overrule it.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6 · CLUSTER 3: GROW & PROTECT -->
+      <section class="slide light" data-title-en="Cluster 3 · Grow &amp; Protect: Land, Water, Nature" data-title-zh="集群三 · 耕种与守护：土地、水、自然">
+        <div class="kicker" data-k="s6.kick">Cluster 3 · Grow &amp; Protect</div>
+        <h1 class="head" data-k="s6.head">Land, Water, Wildlife</h1>
+        <p class="sub" data-k="s6.sub">The clearest “agent in the field” sprays only the weeds it sees — and its failure mode teaches the guardrail lesson of this whole talk.</p>
+        <div class="cols">
+          <div class="panel green">
+            <h3><span class="badge green" data-k="s6.badge">Field</span> <span data-k="s6.ph">Three deployments</span></h3>
+            <ul class="pts tick">
+              <li data-k="s6.b1"><b>John Deere See &amp; Spray</b> — cameras decide in ≤200 ms and spray only weeds; an Iowa State demo (415 acres, 2024) saved <b>76% of herbicide on average</b> (43.9–90.6% per field).</li>
+              <li data-k="s6.b2"><b>SUEZ Smart Water</b> (company report, Dec 2025): AI leak detection saved <b>33M m³ of water in 2024</b> — 8,900 Olympic pools — across 7M connected meters.</li>
+              <li data-k="s6.b3"><b>Wildlife Insights / SpeciesNet</b> — AI sorts camera traps: SpeciesNet trained on <b>65M+ images, 1,295 species</b>; up to 80% of trap images are blanks it filters out.</li>
+            </ul>
+            <div class="note-box red" data-k="s6.note"><b>The warning:</b> in a 3-year University of Arkansas trial, See &amp; Spray's low-sensitivity settings saved herbicide but let Palmer amaranth grow <b>+280%/yr</b>. Savings and weed control are the same dial — specify the objective in climate terms, not task terms.</div>
+            <div class="src"><span data-k="s6.src">Sources: Agrifood AI Field Guide (2026) incl. Arkansas trial · SUEZ (2025) · FruitPunch AI / Gray Group — slide 14.</span></div>
+          </div>
+          <div class="diagram">
+            <div class="dbox green"><span class="stat-big">76%</span><small data-k="s6.d1">herbicide saved on average — Iowa demo, 2024 (university extension)</small></div>
+            <div class="dbox blue"><span class="stat-big">33M m³</span><small data-k="s6.d2">water saved by leak detection in 2024 — SUEZ (company report)</small></div>
+            <div class="dbox teal"><span class="stat-big">1,295</span><small data-k="s6.d3">species classified from camera traps — Wildlife Insights / SpeciesNet</small></div>
+            <div class="dbox red fill-red" data-k="s6.d4">Mis-specified objective → resistant weeds. The agent did exactly what it was told.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7 · CLUSTER 4: PROVE IT -->
+      <section class="slide light" data-title-en="Cluster 4 · Prove It: Carbon Accounting &amp; MRV" data-title-zh="集群四 · 用证据说话：碳核算与 MRV">
+        <div class="kicker" data-k="s7.kick">Cluster 4 · Prove It</div>
+        <h1 class="head" data-k="s7.head">Measure Emissions Independently</h1>
+        <p class="sub" data-k="s7.sub">Self-reported inventories understate reality. Satellites plus AI are becoming the audit layer — but detection is not abatement.</p>
+        <div class="cols">
+          <div class="panel teal">
+            <h3><span class="badge teal" data-k="s7.badge">MRV</span> <span data-k="s7.ph">Observation, then action</span></h3>
+            <ul class="pts">
+              <li data-k="s7.b1"><b>Climate TRACE</b> — an independent coalition's facility-level emissions inventory, built from satellite data + AI, updated monthly.</li>
+              <li data-k="s7.b2"><b>MethaneSAT</b> (preprint, May 2026 — <b>not yet peer-reviewed</b>): across 34 regions, satellite estimates run <b>~60% above</b> bottom-up inventories.</li>
+              <li data-k="s7.b3"><b>Carbon Mapper Tanager-1</b> — a Texas plume of 7,100 kg/h was reported, repaired, and re-observed clean <b>15 days later</b>: the closed loop, documented.</li>
+              <li data-k="s7.b4"><b>The gap:</b> only <b>~12%</b> of UNEP MARS satellite alerts received an operator response in 2025. An agent that only alerts is not a climate solution.</li>
+            </ul>
+            <div class="src"><span data-k="s7.src">Sources: Climate TRACE · MethaneSAT preprint (Research Square, 2026) · Carbon Mapper via Vrulum (2026) — slide 14. MethaneSAT lost contact in June 2025; MRV continuity is itself a risk.</span></div>
+          </div>
+          <div class="diagram">
+            <div class="d-title" data-k="s7.dt">DETECT → ALERT → REPAIR → VERIFY</div>
+            <div class="dbox blue" data-k="s7.d1">Detect<small>satellite sees the plume</small></div>
+            <div class="arrow">↓</div>
+            <div class="dbox teal" data-k="s7.d2">Alert<small>operator is notified</small></div>
+            <div class="dbox red fill-red" data-k="s7.d3">⚠ The break: only ~12% of alerts answered (UNEP MARS, 2025)</div>
+            <div class="dbox orange" data-k="s7.d4">Repair<small>crew fixes the leak</small></div>
+            <div class="arrow">↓</div>
+            <div class="dbox green fill-green" data-k="s7.d5">Verify<small>satellite re-observes: plume gone (Tanager-1, 15 days)</small></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 8 · GREEN AI FOOTPRINT -->
+      <section class="slide light" data-title-en="Part 2 · Green AI: AI's Own Footprint" data-title-zh="第二部分 · 绿色 AI：AI 自身的足迹">
+        <div class="kicker" data-k="s8.kick">The Other Ledger</div>
+        <h1 class="head" data-k="s8.head">AI Has a Footprint Too</h1>
+        <p class="sub" data-k="s8.sub">Every benefit in this talk must be netted against the energy and water the AI itself uses. Green AI starts with honest accounting.</p>
+        <div class="cols">
+          <div class="panel amber">
+            <h3><span class="badge amber" data-k="s8.badge">Footprint</span> <span data-k="s8.ph">The numbers</span></h3>
+            <ul class="pts warn">
+              <li data-k="s8.b1"><b>Training GPT-3:</b> 552 tCO₂e. The same-size BLOOM model on France's cleaner grid: <b>24.7 t</b>. Where you compute matters more than the model (Patterson et al., 2021).</li>
+              <li data-k="s8.b2"><b>One median Gemini prompt:</b> 0.24 Wh (Google, Aug 2025 — <b>not independently verified</b>). Tiny per prompt; agentic loops multiply calls by orders of magnitude.</li>
+              <li data-k="s8.b3"><b>Water (US, 2023):</b> data centres drank <b>66bn litres</b> on site — and ~800bn more at the power plants behind them (LBNL, 2024).</li>
+              <li data-k="s8.b4"><b>Mitigation that works:</b> smaller / sparse models, clean grids, carbon-aware scheduling, capped agent loops — and measurement per task.</li>
+            </ul>
+            <div class="src"><span data-k="s8.src">Vintage warning: the IEA's live page (Nov 2026) shows a revised series — 460 TWh (2024) → &gt;1,000 TWh (2030). The chart uses the April 2025 report. One vintage per slide; never mix them.</span></div>
+          </div>
+          <div class="diagram">
+            <div class="d-title" data-k="s8.dt">DATA-CENTRE ELECTRICITY — IEA, APRIL 2025 REPORT</div>
+            <svg viewBox="0 0 520 330" width="100%" role="img" aria-label="Bar chart: data-centre electricity 415 TWh in 2024 rising to 945 TWh in 2030 (IEA)">
+              <line x1="70" y1="278" x2="490" y2="278" stroke="#39424f" stroke-width="2"/>
+              <line x1="70" y1="160" x2="490" y2="160" stroke="#e2dcc6" stroke-width="1.5" stroke-dasharray="5 5"/>
+              <text x="62" y="165" text-anchor="end" font-size="13" fill="#5d6774" font-weight="600">500</text>
+              <line x1="70" y1="42" x2="490" y2="42" stroke="#e2dcc6" stroke-width="1.5" stroke-dasharray="5 5"/>
+              <text x="62" y="47" text-anchor="end" font-size="13" fill="#5d6774" font-weight="600">1,000</text>
+              <rect x="130" y="180" width="110" height="98" rx="5" fill="#1c6fb8"/>
+              <rect x="320" y="55" width="110" height="223" rx="5" fill="#f96a1b"/>
+              <text x="185" y="162" text-anchor="middle" font-size="24" font-weight="900" fill="#131922">415 TWh</text>
+              <text x="375" y="37" text-anchor="middle" font-size="24" font-weight="900" fill="#131922">945 TWh</text>
+              <text x="185" y="302" text-anchor="middle" font-size="16" font-weight="800" fill="#131922">2024</text>
+              <text x="375" y="302" text-anchor="middle" font-size="16" font-weight="800" fill="#131922">2030</text>
+              <text x="185" y="322" text-anchor="middle" font-size="12.5" fill="#5d6774" data-k="s8.c1">~1.5% of global electricity</text>
+              <text x="375" y="322" text-anchor="middle" font-size="12.5" fill="#5d6774" data-k="s8.c2">just under 3%</text>
+            </svg>
+            <div class="dbox gray" data-k="s8.d1">Efficiency per task is falling ~10×/yr — yet total demand still doubles. That is the rebound effect, and it is a governance problem, not a reason to stop.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 9 · GUARDRAILS -->
+      <section class="slide light" data-title-en="Part 3 · Responsible Deployment: The Guardrails" data-title-zh="第三部分 · 负责任部署：护栏">
+        <div class="kicker" data-k="s9.kick">Responsible Deployment</div>
+        <h1 class="head" data-k="s9.head">Four Guardrails, Non-Negotiable</h1>
+        <p class="sub" data-k="s9.sub">No agent touches a physical system without all four. This pattern sits behind every success story in this talk.</p>
+        <div class="cols">
+          <div class="panel green">
+            <h3><span class="badge green" data-k="s9.badge">Guardrails</span> <span data-k="s9.ph">The rule</span></h3>
+            <ul class="pts tick">
+              <li data-k="s9.b1"><b>1 · Bounded action space</b> — the agent may only do pre-approved things, inside pre-set ranges.</li>
+              <li data-k="s9.b2"><b>2 · Human or independent veto</b> — DeepMind cooling: the site's own control system checks every action before it applies, every 5 minutes.</li>
+              <li data-k="s9.b3"><b>3 · Audit log</b> — every tool call recorded, replayable, attributable. Green Light: engineers accept or reject each suggestion.</li>
+              <li data-k="s9.b4"><b>4 · Kill-switch &amp; safe stop</b> — wildfire dispatchers review camera alerts before anything rolls; a human can halt the agent at any time.</li>
+            </ul>
+            <div class="src"><span data-k="s9.src">Sources: DeepMind cooling case synthesis · Google Green Light · AP wildfire report (2026) — slide 14. The same through-line runs through NIST AI RMF, the EU AI Act and OWASP's “least-agency” principle.</span></div>
+          </div>
+          <div class="diagram">
+            <div class="dbox purple" data-k="s9.d1">Climate agent<small>proposes an action</small></div>
+            <div class="arrow">↓</div>
+            <div class="drow">
+              <div class="dbox blue" data-k="s9.d2">Bounds check<small>in range? allowed tool?</small></div>
+              <div class="dbox orange" data-k="s9.d3">Veto point<small>human / safety controller</small></div>
+              <div class="dbox teal" data-k="s9.d4">Audit log<small>every call, recorded</small></div>
+            </div>
+            <div class="arrow">↓</div>
+            <div class="dbox green fill-green" data-k="s9.d5">Physical system<small>grid · building · farm · forest</small></div>
+            <div class="dbox red fill-red" data-k="s9.d6">■ Kill-switch — revoke &amp; freeze, always within reach</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 10 · FRAMEWORKS -->
+      <section class="slide light" data-title-en="Governance: Frameworks That Apply" data-title-zh="治理：适用的框架">
+        <div class="kicker" data-k="s10.kick">Governance</div>
+        <h1 class="head" data-k="s10.head">Frameworks That Apply</h1>
+        <p class="sub" data-k="s10.sub">Use the combination — values, method, audit, law — not any one framework on its own.</p>
+        <div class="cols">
+          <div class="panel blue">
+            <h3><span class="badge blue" data-k="s10.badge">Frameworks</span> <span data-k="s10.ph">The stack</span></h3>
+            <ul class="pts">
+              <li data-k="s10.b1"><b>OECD AI Principles</b> (updated May 2024) — the values: human-centred, transparent, accountable. Endorsed by 47 countries.</li>
+              <li data-k="s10.b2"><b>NIST AI RMF</b> (Jan 2023) — the method: Govern, Map, Measure, Manage.</li>
+              <li data-k="s10.b3"><b>ISO/IEC 42001</b> (Dec 2023) — the audit: a certifiable AI management system a buyer can check.</li>
+              <li data-k="s10.b4"><b>EU AI Act</b> (in force Aug 2024) — the law: risk tiers; high-risk duties phase in from 2026, some deferred to 2027–28.</li>
+              <li data-k="s10.b5"><b>UN TEC</b> (July 2025) — climate-specific: build data and skills, design for inclusion, manage AI's own energy and water.</li>
+            </ul>
+            <div class="src"><span data-k="s10.src">Sources: OECD · NIST · ISO · Regulation (EU) 2024/1689 · UN TEC (2025) — links on slide 14.</span></div>
+          </div>
+          <div class="diagram">
+            <div class="dbox blue" data-k="s10.d1">OECD Principles<small>VALUES — why we act</small></div>
+            <div class="arrow">↓</div>
+            <div class="dbox purple" data-k="s10.d2">NIST AI RMF<small>METHOD — Govern · Map · Measure · Manage</small></div>
+            <div class="arrow">↓</div>
+            <div class="dbox teal" data-k="s10.d3">ISO/IEC 42001<small>AUDIT — certifiable management system</small></div>
+            <div class="arrow">↓</div>
+            <div class="dbox orange" data-k="s10.d4">EU AI Act<small>LAW — binding where the EU market is touched</small></div>
+            <div class="dbox green fill-green" data-k="s10.d5">UN TEC (2025) runs across all four — climate data, inclusion, footprint</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 11 · WHAT CAN GO WRONG -->
+      <section class="slide light" data-title-en="What Can Go Wrong: Agent Failure Modes" data-title-zh="可能出什么问题：智能体失效模式">
+        <div class="kicker" data-k="s11.kick">Failure Modes</div>
+        <h1 class="head" data-k="s11.head">What Can Go Wrong</h1>
+        <p class="sub" data-k="s11.sub">Agents fail by acting, not by answering. These are documented failure modes — with evidence, not hypotheticals.</p>
+        <div class="cols">
+          <div class="panel red">
+            <h3><span class="badge red" data-k="s11.badge">Risks</span> <span data-k="s11.ph">Evidence first</span></h3>
+            <ul class="pts cross">
+              <li data-k="s11.b1"><b>OWASP Agentic AI Top 10 (2026):</b> #1 <b>goal hijack</b> — text the agent reads replaces its objective; #2 tool misuse; #3 identity &amp; privilege abuse.</li>
+              <li data-k="s11.b2"><b>UNESCO / UCL (Nov 2026):</b> 33 models scored <b>33.8%</b> — chance level — when combining two climate policies; under pushback, <b>every model tested</b> eventually abandoned a correct climate fact.</li>
+              <li data-k="s11.b3"><b>Gartner (forecast, June 2025):</b> &gt;40% of agentic AI projects will be cancelled by end-2027 — escalating costs, unclear value, inadequate risk controls.</li>
+              <li data-k="s11.b4"><b>Drift:</b> no single step fails, yet the outcome wanders from the intent — the See &amp; Spray resistance case (slide 6).</li>
+            </ul>
+            <div class="src"><span data-k="s11.src">Sources: OWASP Agentic AI Top 10 (released 9 Dec 2025) · UNESCO, “Can We Trust AI on Climate?”, COP31, 16 Nov 2026 · Gartner press release, 25 June 2025 — slide 14.</span></div>
+          </div>
+          <div class="diagram">
+            <div class="d-title" data-k="s11.dt">RISK → MITIGATION</div>
+            <div class="drow">
+              <div class="dbox red" data-k="s11.d1">Goal hijack<small>poisoned input steers the agent</small></div>
+              <div class="arrow">→</div>
+              <div class="dbox green" data-k="s11.d2">Treat all input as untrusted<small>verify before it becomes instruction</small></div>
+            </div>
+            <div class="drow">
+              <div class="dbox red" data-k="s11.d3">Tool misuse<small>plausible but wrong action</small></div>
+              <div class="arrow">→</div>
+              <div class="dbox green" data-k="s11.d4">Least-privilege scopes + caps<small>allowlists · rate &amp; spend limits</small></div>
+            </div>
+            <div class="drow">
+              <div class="dbox red" data-k="s11.d5">Sycophancy<small>model folds under pushback</small></div>
+              <div class="arrow">→</div>
+              <div class="dbox green" data-k="s11.d6">Verify against validated models<small>never let a chatbot reason climate policy alone</small></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 12 · CHECKLIST -->
+      <section class="slide light" data-title-en="What to Avoid: The Pre-Deployment Checklist" data-title-zh="要避免什么：部署前清单">
+        <div class="kicker" data-k="s12.kick">The Checklist</div>
+        <h1 class="head" data-k="s12.head">Before You Deploy</h1>
+        <p class="sub" data-k="s12.sub">Five checks that separate climate action from climate marketing.</p>
+        <div class="cols">
+          <div class="panel">
+            <h3><span class="badge" data-k="s12.badge">Avoid</span> <span data-k="s12.ph">Do not ship if…</span></h3>
+            <ul class="pts cross">
+              <li data-k="s12.b1">The % has <b>no source, date or baseline</b> — 74% of 154 corporate AI-climate claims lacked verifiable evidence (Joshi report, Feb 2026).</li>
+              <li data-k="s12.b2">The benefit is <b>gross, not net</b> of the AI's own energy and water (slide 8).</li>
+              <li data-k="s12.b3">The agent <b>alerts but nobody owns the response</b> — the 12% MARS lesson (slide 7).</li>
+              <li data-k="s12.b4">The model was <b>never validated on local data</b>, language or conditions — the UN TEC warning for developing countries (2025).</li>
+              <li data-k="s12.b5">Autonomy is <b>open-ended in a physical system</b> — no bounds, no veto, no log (slide 9).</li>
+            </ul>
+            <div class="src"><span data-k="s12.src">Sources: Ketan Joshi, “AI-climate claims” report (Feb 2026, via The Outpost) · UN TEC (2025) · UNEP MARS / IEA — slide 14.</span></div>
+          </div>
+          <div class="diagram">
+            <div class="d-title" data-k="s12.dt">THE NET-BENEFIT TEST</div>
+            <div class="dbox blue" data-k="s12.d1">Measured climate benefit<small>tonnes · m³ · lives — with a baseline</small></div>
+            <div class="arrow">−</div>
+            <div class="dbox orange" data-k="s12.d2">Measured AI footprint<small>kWh · CO₂e · litres — same period</small></div>
+            <div class="arrow">↓</div>
+            <div class="dbox purple" data-k="s12.d3">Independently verified<small>not vendor self-report · over years, not weeks</small></div>
+            <div class="drow">
+              <div class="dbox green fill-green" data-k="s12.d4">Net positive → deploy, bounded</div>
+              <div class="dbox red fill-red" data-k="s12.d5">Unmeasured → don't claim it</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 13 · NET BENEFIT + CALL TO ACTION -->
+      <section class="slide light" data-title-en="Synthesis: The Net-Benefit Test &amp; Three Asks" data-title-zh="总结：净收益检验与三项呼吁">
+        <div class="kicker" data-k="s13.kick">Synthesis</div>
+        <h1 class="head" data-k="s13.head">Potential Is Real — If Directed</h1>
+        <p class="sub" data-k="s13.sub">Peer-reviewed potential: AI could cut 3.2–5.4 GtCO₂e a year by 2035 in power, food and transport — against its own 0.4–1.6 Gt cost. Potential, not destiny: policy and design decide.</p>
+        <div class="cols">
+          <div class="panel green">
+            <h3><span class="badge green" data-k="s13.badge">Call to Action</span> <span data-k="s13.ph">Three asks</span></h3>
+            <ul class="pts tick">
+              <li data-k="s13.b1"><b>1 · Fund closed loops</b> — detect → act → verify — not demos that only alert.</li>
+              <li data-k="s13.b2"><b>2 · Mandate measurement</b> — every climate agent reports kWh, CO₂e and litres next to its benefit, per task.</li>
+              <li data-k="s13.b3"><b>3 · Guardrails before autonomy</b> — bounds, veto, log, kill-switch, in physical systems, first.</li>
+            </ul>
+            <div class="note-box green" data-k="s13.note"><b>One line to remember:</b> “Agents should earn autonomy — in small, bounded, verified steps.”</div>
+            <div class="src"><span data-k="s13.src">Source: Stern et al. / Systemiq + LSE Grantham, <i>npj Climate Action</i>, 23 June 2025 (DOI 10.1038/s44168-025-00252-3). A Feb 2026 critique notes the range leans on alternative-protein adoption assumptions — treat the top of the range as potential, not forecast. The older Google/BCG “5–10% by 2030” claim (2023) is a consultancy estimate whose calculations were never published.</span></div>
+          </div>
+          <div class="diagram">
+            <div class="d-title" data-k="s13.dt">ANNUAL POTENTIAL BY 2035 — STERN ET AL. (2025)</div>
+            <div class="hbar-wrap">
+              <div class="hbar-lab"><span data-k="s13.h1">Emissions AI could cut (power · food · transport)</span><span>3.2–5.4 GtCO₂e</span></div>
+              <div class="hbar"><i style="left:0;width:100%;background:linear-gradient(90deg,#57b877,#1e9e4f)"></i></div>
+            </div>
+            <div class="hbar-wrap">
+              <div class="hbar-lab"><span data-k="s13.h2">AI's own data-centre emissions (same study)</span><span>0.4–1.6 GtCO₂e</span></div>
+              <div class="hbar"><i style="left:0;width:30%;background:linear-gradient(90deg,#f6a21e,#f96a1b)"></i></div>
+            </div>
+            <div class="dbox gray" data-k="s13.d1">Bar widths show the top of each range, to the same scale. The gap is the opportunity — and it closes only if AI is deliberately directed at climate, with public policy behind it.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 14 · SOURCES & OPEN QUESTIONS -->
+      <section class="slide light" data-title-en="Sources &amp; Open Questions" data-title-zh="来源与未决问题">
+        <div class="kicker" data-k="s14.kick">Sources</div>
+        <h1 class="head" data-k="s14.head">Sources &amp; Open Questions</h1>
+        <p class="sub" data-k="s14.sub">Every figure in this deck traces to one of these. Vendor-reported numbers are labelled on their slides; what could not be verified is listed openly below.</p>
+        <div class="cols">
+          <div class="panel blue">
+            <h3><span class="badge blue" data-k="s14.badge">Sources</span> <span data-k="s14.ph">In order of use</span></h3>
+            <div class="src-cols">
+              <a href="https://www.databricks.com/blog/agentic-ai-vs-generative-ai" target="_blank" rel="noopener"><b>Databricks</b> — Agentic AI vs Generative AI <span class="arr">↗</span></a>
+              <a href="https://www.globalgovernmentforum.com/un-sets-out-opportunities-and-risks-for-ai-in-climate-action/" target="_blank" rel="noopener"><b>UN TEC</b> — AI for Climate Action paper, July 2025 <span class="arr">↗</span></a>
+              <a href="https://deepmind.google/blog/graphcast-ai-model-for-faster-and-more-accurate-global-weather-forecasting/" target="_blank" rel="noopener"><b>DeepMind</b> — GraphCast, <i>Science</i> 2023 <span class="arr">↗</span></a>
+              <a href="https://blog.google/innovation-and-ai/products/google-ai-global-flood-forecasting/" target="_blank" rel="noopener"><b>Google</b> — Flood Hub, <i>Nature</i> 2024 <span class="arr">↗</span></a>
+              <a href="http://www.hamiltoncountyherald.com/story.aspx?id=26862&date=5%2F1%2F2026" target="_blank" rel="noopener"><b>AP</b> — Wildfire AI / ALERTCalifornia, May 2026 <span class="arr">↗</span></a>
+              <a href="https://blog.google/company-news/outreach-and-initiatives/environment/deepmind-ai-reduces-energy-used-for/" target="_blank" rel="noopener"><b>Google</b> — DeepMind cooling, 2016 <span class="arr">↗</span></a>
+              <a href="https://sites.research.google/greenlight/?authuser=3" target="_blank" rel="noopener"><b>Google</b> — Project Green Light <span class="arr">↗</span></a>
+              <a href="https://agrifood.metaviews.ca/units/john-deere-see-and-spray/" target="_blank" rel="noopener"><b>Agrifood Field Guide</b> — See &amp; Spray + Arkansas trial <span class="arr">↗</span></a>
+              <a href="https://www.suez.com/en/uk/news/smart-management-water-cycle" target="_blank" rel="noopener"><b>SUEZ</b> — Smart Water, Dec 2025 <span class="arr">↗</span></a>
+              <a href="https://vrulum.co.uk/how-far/finding-every-methane-leak-from-space" target="_blank" rel="noopener"><b>Vrulum</b> — Carbon Mapper / UNEP MARS <span class="arr">↗</span></a>
+              <a href="https://www.researchsquare.com/article/rs-9688202/v1.pdf?c=1779478544000" target="_blank" rel="noopener"><b>MethaneSAT</b> — preprint, May 2026 <span class="arr">↗</span></a>
+              <a href="https://www.iea.org/reports/energy-and-ai/energy-supply-for-ai" target="_blank" rel="noopener"><b>IEA</b> — Energy and AI <span class="arr">↗</span></a>
+              <a href="https://cloud.google.com/blog/products/infrastructure/measuring-the-environmental-impact-of-ai-inference" target="_blank" rel="noopener"><b>Google Cloud</b> — Gemini inference footprint, 2025 <span class="arr">↗</span></a>
+              <a href="https://www.formal.ai/academy/agentic-ai-security/" target="_blank" rel="noopener"><b>OWASP</b> — Agentic AI Top 10 (2026) <span class="arr">↗</span></a>
+              <a href="https://www.unesco.org/en/articles/ai-models-abandon-climate-facts-first-sign-user-push-back-unesco-ucl-report-shows" target="_blank" rel="noopener"><b>UNESCO / UCL</b> — Can We Trust AI on Climate?, Nov 2026 <span class="arr">↗</span></a>
+              <a href="https://www.systemiq.earth/ai-and-the-climate-transition-aligning-capital-code-and-carbon/" target="_blank" rel="noopener"><b>Systemiq / LSE</b> — Stern et al., <i>npj Climate Action</i> 2025 <span class="arr">↗</span></a>
+              <a href="https://theoutpost.ai/news-story/big-tech-s-ai-climate-promises-dismissed-as-greenwashing-in-new-report-23837/" target="_blank" rel="noopener"><b>The Outpost</b> — Joshi AI-climate claims report, Feb 2026 <span class="arr">↗</span></a>
+              <a href="https://blog.google/company-news/outreach-and-initiatives/sustainability/report-ai-sustainability-google-cop28/" target="_blank" rel="noopener"><b>Google / BCG</b> — 5–10% claim, Nov 2023 (contested) <span class="arr">↗</span></a>
+            </div>
+          </div>
+          <div class="panel red">
+            <h3><span class="badge red" data-k="s14.badge2">Open Questions</span> <span data-k="s14.ph2">Not verified — stated plainly</span></h3>
+            <ul class="pts warn">
+              <li data-k="s14.q1"><b>IEA publishes two vintages</b> — 415→945 TWh (April 2025 report) vs 460→&gt;1,000 TWh (live page, Nov 2026). Slide 8 uses the April 2025 report; the two must not be mixed or averaged.</li>
+              <li data-k="s14.q2"><b>MethaneSAT figures are a preprint</b> (May 2026), not yet peer-reviewed, and the satellite lost contact in June 2025 — treat the ~60% understatement as preliminary.</li>
+              <li data-k="s14.q3"><b>DeepMind wind (+20%)</b> is company-reported via a secondary summary; the primary Google post was not re-verified for this deck.</li>
+              <li data-k="s14.q4"><b>Vendor percentages</b> (BrainBox “up to −25%”, See &amp; Spray savings) are directionally corroborated but baseline-dependent and not independently audited.</li>
+              <li data-k="s14.q5"><b>Summit details were not specified</b> — no name, date, venue or video length was given; this deck targets a ~12–15 minute general-audience video and can be rebalanced for a technical or policy audience.</li>
+            </ul>
+            <div class="note-box" data-k="s14.note"><b>Invite challenge:</b> if a number on any slide cannot be traced to a source above, treat the slide — not the source — as wrong, and ask.</div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <div class="progress"><i id="progressBar"></i></div>
+    <nav class="navbar" aria-label="Slides">
+      <button class="navbtn" id="prevBtn" type="button" data-k="prev">‹ Prev</button>
+      <div class="dots" id="dots"></div>
+      <div class="counter" id="counter">1 / 14</div>
+      <button class="navbtn next" id="nextBtn" type="button" data-k="next">Next ›</button>
+    </nav>
+
+    <script>
+      (function(){
+        var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+        var total = slides.length;
+        var cur = 0;
+        var dotsEl = document.getElementById('dots');
+        var counter = document.getElementById('counter');
+        var bar = document.getElementById('progressBar');
+        var prevBtn = document.getElementById('prevBtn');
+        var nextBtn = document.getElementById('nextBtn');
+        var topTitle = document.getElementById('topTitle');
+        var lang = 'en';
+
+        slides.forEach(function(_, i){
+          var d = document.createElement('button');
+          d.type = 'button';
+          d.setAttribute('aria-label', 'Slide ' + (i + 1));
+          d.addEventListener('click', function(){ go(i); });
+          dotsEl.appendChild(d);
+        });
+        var dots = Array.prototype.slice.call(dotsEl.children);
+
+        function titleFor(i){
+          var s = slides[i];
+          return lang === 'zh' ? (s.getAttribute('data-title-zh') || s.getAttribute('data-title-en')) : s.getAttribute('data-title-en');
+        }
+        function go(n){
+          cur = Math.max(0, Math.min(total - 1, n));
+          slides.forEach(function(s, i){ s.classList.toggle('active', i === cur); s.scrollTop = 0; });
+          dots.forEach(function(d, i){ d.classList.toggle('on', i === cur); });
+          counter.textContent = (cur + 1) + ' / ' + total;
+          bar.style.width = ((cur + 1) / total * 100) + '%';
+          prevBtn.disabled = cur === 0;
+          nextBtn.disabled = cur === total - 1;
+          topTitle.textContent = titleFor(cur);
+          try { history.replaceState(null, '', '#' + (cur + 1)); } catch(e) {}
+        }
+        prevBtn.addEventListener('click', function(){ go(cur - 1); });
+        nextBtn.addEventListener('click', function(){ go(cur + 1); });
+        document.getElementById('startBtn').addEventListener('click', function(){ go(1); });
+        document.getElementById('srcBtn').addEventListener('click', function(){ go(total - 1); });
+        document.getElementById('coverSrcBtn').addEventListener('click', function(){ go(total - 1); });
+        document.getElementById('fsBtn').addEventListener('click', function(){
+          try {
+            if (document.fullscreenElement) { document.exitFullscreen(); }
+            else if (document.documentElement.requestFullscreen) { document.documentElement.requestFullscreen(); }
+          } catch(e) {}
+        });
+        document.addEventListener('keydown', function(e){
+          if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); go(cur + 1); }
+          else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); go(cur - 1); }
+          else if (e.key === 'Home') { go(0); }
+          else if (e.key === 'End') { go(total - 1); }
+        });
+        var tx = null;
+        document.getElementById('stage').addEventListener('touchstart', function(e){ tx = e.changedTouches[0].clientX; }, {passive:true});
+        document.getElementById('stage').addEventListener('touchend', function(e){
+          if (tx === null) return;
+          var dx = e.changedTouches[0].clientX - tx;
+          if (Math.abs(dx) > 60) { go(dx < 0 ? cur + 1 : cur - 1); }
+          tx = null;
+        }, {passive:true});
+
+        /* ---------- i18n ---------- */
+        var enCache = {};
+        document.querySelectorAll('[data-k]').forEach(function(el){ enCache[el.getAttribute('data-k')] = el.innerHTML; });
+        var ZH = {
+          "brand":"智能体 AI · 气候行动","fs":"全屏","srcbtn":"来源 ↗","prev":"‹ 上一页","next":"下一页 ›",
+          "s1.pill":"绿色 AI · 实际应用 · 负责任部署",
+          "s1.t1":"智能体 AI","s1.t2":"助力气候行动",
+          "s1.p1":"第一部分","s1.p1w":"应用","s1.p2":"第二部分","s1.p2w":"足迹","s1.p3":"第三部分","s1.p3w":"护栏",
+          "s1.sub":"洪水影响着 <b>约 15 亿人</b>，每年造成 <b>约 500 亿美元</b>损失。气候变化是一个循环，而不是一个问题——感知、决策、行动、再感知。这个循环正是智能体 AI 所运行的。",
+          "s1.by":"主讲人","s1.role":"USF 兼职教授 · CSA AI 安全联合主席 · DistributedApps.ai 首席执行官",
+          "s1.start":"开始演示 →","s1.src":"来源与未决问题",
+          "s1.foot":"背景数据来源：Google Flood Hub（2024）。本演示中的每个数字都在其幻灯片上标注了来源。",
+          "s2.kick":"定义","s2.head":"智能体会行动，聊天机器人只会回答。",
+          "s2.sub":"整个演讲只用一个定义：智能体感知环境、制定计划、使用工具并采取行动——然后检查结果并迭代。",
+          "s2.badge":"定义","s2.ph":"感知 → 计划 → 行动 → 反思",
+          "s2.b1":"<b>智能体 AI</b>——“自主系统感知其环境，规划多步骤行动序列，并以最少的人工干预执行这些计划。”（Databricks，2026）",
+          "s2.b2":"聊天机器人的工作止于<b>答案</b>。智能体的工作止于<b>结果</b>——一台被调节的制冷机、一块被重新调度的电池、一缕被标记的烟羽。",
+          "s2.b3":"人类设定<b>目标和护栏</b>——而不是中间的每一步。",
+          "s2.b4":"目前仍<b>没有单一公认的定义</b>（BetaNews，2026）——因此本演示在此固定一个定义，并全程坚持使用。",
+          "s2.src":"来源：Databricks《智能体 AI 与生成式 AI》（2026 年 11 月更新）· Neo4j（2025）· BetaNews《什么是智能体 AI？》（2026）——完整链接见第 14 页。",
+          "s2.dt":"智能体循环",
+          "s2.d1":"感知<small>传感器 · 卫星 · 仪表</small>","s2.d2":"计划<small>多步骤，面向目标</small>",
+          "s2.d3":"行动<small>API · 控制器 · 执行器</small>","s2.d4":"反思<small>有效吗？再调整</small>",
+          "s2.d5":"失效模式变了：错误<i>内容</i> → 错误<i>行动</i>，带来真实世界的后果",
+          "s2.th1":"聊天机器人","s2.th2":"智能体",
+          "s2.r1a":"触发","s2.r1b":"你的提示词","s2.r1c":"目标、事件、日程",
+          "s2.r2a":"记忆","s2.r2b":"单次会话","s2.r2c":"跨运行持久保存",
+          "s2.r3a":"人类角色","s2.r3b":"每次提示","s2.r3c":"目标层面 + 否决权",
+          "s3.kick":"为什么是现在","s3.head":"气候工作是一个循环",
+          "s3.sub":"电网、建筑、农场和森林不会等待提示词。它们需要持续运行的系统——而三大推动力刚刚让这成为可能。",
+          "s3.badge":"推动力","s3.ph":"三件事变了",
+          "s3.b1":"<b>廉价、持续的感知</b>——加州约 1,300 台野火摄像头；卫星扫描甲烷；仅 SUEZ 一家就有 700 万块智能水表。",
+          "s3.b2":"<b>预报模型</b>——GraphCast 在一分钟内生成 10 天全球天气预报（DeepMind，《科学》，2023）。",
+          "s3.b3":"<b>智能体可调用的工具</b>——API、楼宇控制器、电网调度——且对智能体可触及的范围设有边界。",
+          "s3.b4":"<b>联合国框架（TEC，2025 年 7 月）：</b>AI 可以优化电网、预报需求与极端天气、支持生物多样性——前提是治理与数据跟得上。",
+          "s3.src":"来源：联合国技术执行委员会报告，2025 年 7 月（经 Global Government Forum）· DeepMind GraphCast，2023——见第 14 页。",
+          "s3.d1":"传感器与卫星<small>持续的气候数据</small>","s3.d2":"预报模型<small>GraphCast · GenCast · AIFS</small>","s3.d3":"工具与控制器<small>API · 执行器 · MCP</small>",
+          "s3.d4s":"感知 → 决策 → 行动 → 再感知——每几分钟一次，而不是每次开会一次",
+          "s3.d5":"聊天机器人能<i>写出</i>一份气候计划。只有智能体能<i>运行</i>它。",
+          "s4.kick":"集群一 · 更早看见","s4.head":"先预报，早响应",
+          "s4.sub":"气候 AI 中证据最充分的成果是更早看见——洪水、火灾和天气，在它们到来前数天或数小时。",
+          "s4.badge":"预警","s4.ph":"已验证的部署",
+          "s4.b1":"<b>Google Flood Hub</b>——河流洪水预报最长提前 <b>7 天</b>；2024 年 11 月扩展至 <b>100 个国家、7 亿人</b>（《自然》，2024 年 3 月）。",
+          "s4.b2":"<b>ALERTCalifornia</b>——约 1,300 台摄像头；2025 年在<b>超过 50% 的情况下先于任何 911 报警</b>标记火灾；Trotter 火灾被控制在 <b>52 英亩</b>，而预测蔓延约 4,000 英亩（CAL FIRE 数据）。",
+          "s4.b3":"<b>GraphCast</b>——在 1,380 个测试变量中 <b>&gt;90%</b> 优于 ECMWF 旗舰预报（DeepMind，《科学》，2023）。",
+          "s4.b4":"背景：预警系统<i>总体上</i>可将洪水死亡人数减少多达 <b>43%</b>——这是总体数字，并非 Flood Hub 专属（ICTWorks，2024）。",
+          "s4.src":"来源：Google Flood Hub 博客（2024，2026 年 1 月更新）· 美联社野火报道，2026 年 5 月 1 日 · DeepMind（2023）——见第 14 页。",
+          "s4.dt":"感知 → 预警 → 行动",
+          "s4.d1":"卫星与摄像头<small>持续观测</small>","s4.d2":"AI 预报<small>提前数天 / 数小时</small>","s4.d3":"警报与行动<small>疏散 · 派遣 · 预置</small>",
+          "s4.d4":"洪水预报提前量","s4.d5":"2025 年先于 911 标记的火灾比例","s4.d6":"英亩——Trotter 火灾，预测约 4,000",
+          "s4.d7":"人类调度员仍在消防车出动前审查每个摄像头警报——雾、灰尘和蒸汽会造成误报。",
+          "s5.kick":"集群二 · 更清洁地运行","s5.head":"优化已有的系统",
+          "s5.sub":"智能体的价值在于挤出电网、建筑和交通中的浪费。以下每个数字都标注了报告方。",
+          "s5.badge":"能源","s5.ph":"四个部署案例",
+          "s5.b1":"<b>DeepMind 风电</b>（公司报告）：提前 36 小时预报出力，使 700 MW 风电的价值<b>提升 20%</b>。",
+          "s5.b2":"<b>DeepMind 制冷</b>（公司报告，2016）：谷歌数据中心制冷能耗<b>降低 40%</b>；自 2018 年起每 5 分钟直接设定制冷参数，且处于安全边界内。",
+          "s5.b3":"<b>BrainBox AI 暖通</b>（厂商报告）：商业建筑能耗最高<b>降低 25%</b>、温室气体最高降低 40%（Trane Technologies）。",
+          "s5.b4":"<b>Google Green Light</b>（模型估算，非实测）：100 多个城市的路口停车次数最高<b>减少 30%、排放减少 10%</b>——每项变更由城市工程师批准。",
+          "s5.src":"来源：Google（2016）· DeepMind 风电（经二手综述）· Trane / BrainBox · Google Green Light——见第 14 页。不要把 2016 年与 2018 年的制冷数字相加；阶段与口径不同。",
+          "s5.d1":"风电价值 · 700 MW（公司报告）","s5.d2":"数据中心制冷能耗（公司报告）",
+          "s5.d3":"建筑暖通能耗，最高（厂商报告）","s5.d4":"路口停车次数，最高（模型估算）",
+          "s5.d5":"四者的共同模式：智能体优化一个<i>有边界</i>的物理系统——人类或安全控制器可以推翻它。",
+          "s6.kick":"集群三 · 耕种与守护","s6.head":"土地、水、野生动物",
+          "s6.sub":"最清晰的“田野智能体”只喷洒它看见的杂草——而它的失效模式教会了本次演讲的护栏一课。",
+          "s6.badge":"田野","s6.ph":"三个部署案例",
+          "s6.b1":"<b>John Deere See &amp; Spray</b>——摄像头在 ≤200 毫秒内决策，只喷杂草；爱荷华州立大学演示（415 英亩，2024）平均节省 <b>76% 除草剂</b>（每块田 43.9–90.6%）。",
+          "s6.b2":"<b>SUEZ 智慧水务</b>（公司报告，2025 年 12 月）：AI 漏损检测在 2024 年节省 <b>3,300 万立方米水</b>——相当于 8,900 个奥运泳池——覆盖 700 万块联网水表。",
+          "s6.b3":"<b>Wildlife Insights / SpeciesNet</b>——AI 分拣相机陷阱照片：SpeciesNet 以 <b>6,500 多万张图像、1,295 个物种</b>训练；相机陷阱图像中多达 80% 是它过滤掉的空白帧。",
+          "s6.note":"<b>警告：</b>在阿肯色大学为期 3 年的试验中，See &amp; Spray 的低灵敏度设置节省了除草剂，却让长芒苋以<b>每年 +280%</b>的速度增长。节省与除草是同一个旋钮——要用气候目标、而不是任务目标来设定目标函数。",
+          "s6.src":"来源：Agrifood AI Field Guide（2026），含阿肯色试验 · SUEZ（2025）· FruitPunch AI / Gray Group——见第 14 页。",
+          "s6.d1":"平均节省的除草剂——爱荷华演示，2024（大学推广）","s6.d2":"2024 年漏损检测节省的水量——SUEZ（公司报告）","s6.d3":"从相机陷阱中识别的物种数——Wildlife Insights / SpeciesNet",
+          "s6.d4":"目标设定错误 → 抗性杂草。智能体完全照它被告知的做了。",
+          "s7.kick":"集群四 · 用证据说话","s7.head":"独立测量排放",
+          "s7.sub":"自我报告的清单低估了现实。卫星加 AI 正在成为审计层——但探测不等于减排。",
+          "s7.badge":"MRV","s7.ph":"先观测，后行动",
+          "s7.b1":"<b>Climate TRACE</b>——一个独立联盟基于卫星数据 + AI 构建的设施级排放清单，每月更新。",
+          "s7.b2":"<b>MethaneSAT</b>（预印本，2026 年 5 月——<b>尚未同行评审</b>）：在 34 个区域，卫星估算比自下而上的清单<b>高约 60%</b>。",
+          "s7.b3":"<b>Carbon Mapper Tanager-1</b>——德克萨斯一处 7,100 kg/h 的甲烷羽流被报告、修复，并在 <b>15 天后</b>复测确认消失：有记录的闭环。",
+          "s7.b4":"<b>缺口：</b>2025 年 UNEP MARS 卫星警报中只有<b>约 12%</b>得到运营商响应。只会报警的智能体不是气候解决方案。",
+          "s7.src":"来源：Climate TRACE · MethaneSAT 预印本（Research Square，2026）· Carbon Mapper（经 Vrulum，2026）——见第 14 页。MethaneSAT 已于 2025 年 6 月失联；MRV 的连续性本身就是风险。",
+          "s7.dt":"探测 → 警报 → 修复 → 验证",
+          "s7.d1":"探测<small>卫星看见羽流</small>","s7.d2":"警报<small>通知运营商</small>",
+          "s7.d3":"⚠ 断点：只有约 12% 的警报得到响应（UNEP MARS，2025）",
+          "s7.d4":"修复<small>维修队修好泄漏</small>","s7.d5":"验证<small>卫星复测：羽流消失（Tanager-1，15 天）</small>"
+        };
+
+        var ZH2 = {
+          "s8.kick":"另一本账","s8.head":"AI 自身也有足迹",
+          "s8.sub":"本次演讲中的每一项收益，都必须扣除 AI 自身消耗的能源与水。绿色 AI 从诚实核算开始。",
+          "s8.badge":"足迹","s8.ph":"数据",
+          "s8.b1":"<b>训练 GPT-3：</b>552 吨 CO₂e。同等规模的 BLOOM 在法国较清洁的电网上：<b>24.7 吨</b>。在哪里计算比模型本身更重要（Patterson 等，2021）。",
+          "s8.b2":"<b>一条 Gemini 中位提示：</b>0.24 Wh（Google，2025 年 8 月——<b>未经独立验证</b>）。单条很小；智能体循环会把调用次数放大几个数量级。",
+          "s8.b3":"<b>用水（美国，2023）：</b>数据中心现场消耗 <b>660 亿升</b>——其背后电厂还消耗约 8,000 亿升（LBNL，2024）。",
+          "s8.b4":"<b>有效的缓解：</b>更小 / 稀疏的模型、清洁电网、碳感知调度、给智能体循环设上限——以及按任务计量。",
+          "s8.src":"版本警告：IEA 实时页面（2026 年 11 月）显示修订后的序列——460 TWh（2024）→ &gt;1,000 TWh（2030）。本图采用 2025 年 4 月报告。每页只用一个版本；切勿混用。",
+          "s8.dt":"数据中心用电——IEA，2025 年 4 月报告",
+          "s8.c1":"约占全球用电 1.5%","s8.c2":"略低于 3%",
+          "s8.d1":"单项任务的效率每年下降约 10 倍——但总需求仍在翻倍。这就是反弹效应，它是治理问题，而不是停下来的理由。",
+          "s9.kick":"负责任部署","s9.head":"四道护栏，不可妥协",
+          "s9.sub":"任何智能体在触及物理系统之前都必须具备全部四道护栏。本次演讲每个成功案例背后都是这个模式。",
+          "s9.badge":"护栏","s9.ph":"规则",
+          "s9.b1":"<b>1 · 有界行动空间</b>——智能体只能做预先批准的事，且在预设范围内。",
+          "s9.b2":"<b>2 · 人类或独立否决</b>——DeepMind 制冷：站点自身的控制系统在每个动作生效前、每 5 分钟检查一次。",
+          "s9.b3":"<b>3 · 审计日志</b>——每次工具调用都被记录、可回放、可追责。Green Light：工程师逐项接受或拒绝建议。",
+          "s9.b4":"<b>4 · 紧急停止与安全停机</b>——野火调度员在任何车辆出动前审查摄像头警报；人类可随时叫停智能体。",
+          "s9.src":"来源：DeepMind 制冷案例综述 · Google Green Light · 美联社野火报道（2026）——见第 14 页。同一主线贯穿 NIST AI RMF、欧盟《AI 法案》与 OWASP 的“最小能动性”原则。",
+          "s9.d1":"气候智能体<small>提出一个动作</small>","s9.d2":"边界检查<small>在范围内？工具被允许？</small>","s9.d3":"否决点<small>人类 / 安全控制器</small>","s9.d4":"审计日志<small>每次调用都有记录</small>",
+          "s9.d5":"物理系统<small>电网 · 建筑 · 农场 · 森林</small>","s9.d6":"■ 紧急停止——撤销并冻结，始终触手可及",
+          "s10.kick":"治理","s10.head":"适用的框架",
+          "s10.sub":"要用组合——价值观、方法、审计、法律——而不是任何单一框架。",
+          "s10.badge":"框架","s10.ph":"框架栈",
+          "s10.b1":"<b>OECD AI 原则</b>（2024 年 5 月更新）——价值观：以人为本、透明、可问责。获 47 个国家认可。",
+          "s10.b2":"<b>NIST AI RMF</b>（2023 年 1 月）——方法：治理、映射、测量、管理。",
+          "s10.b3":"<b>ISO/IEC 42001</b>（2023 年 12 月）——审计：买方可以核查的可认证 AI 管理体系。",
+          "s10.b4":"<b>欧盟《AI 法案》</b>（2024 年 8 月生效）——法律：风险分级；高风险义务自 2026 年起分阶段实施，部分推迟至 2027–28 年。",
+          "s10.b5":"<b>联合国 TEC</b>（2025 年 7 月）——气候专属：建设数据与技能、为包容性设计、管理 AI 自身的能源与水。",
+          "s10.src":"来源：OECD · NIST · ISO · 欧盟法规 (EU) 2024/1689 · 联合国 TEC（2025）——链接见第 14 页。",
+          "s10.d1":"OECD 原则<small>价值观——我们为何行动</small>","s10.d2":"NIST AI RMF<small>方法——治理 · 映射 · 测量 · 管理</small>","s10.d3":"ISO/IEC 42001<small>审计——可认证的管理体系</small>","s10.d4":"欧盟《AI 法案》<small>法律——在触及欧盟市场时具有约束力</small>","s10.d5":"联合国 TEC（2025）贯穿四者——气候数据、包容性、足迹",
+          "s11.kick":"失效模式","s11.head":"可能出什么问题",
+          "s11.sub":"智能体因行动而失败，而不是因回答而失败。以下是已有记录的失效模式——有证据，不是假设。",
+          "s11.badge":"风险","s11.ph":"证据优先",
+          "s11.b1":"<b>OWASP 智能体 AI 十大风险（2026）：</b>第一名<b>目标劫持</b>——智能体读到的文本取代了它的目标；第二名工具滥用；第三名身份与权限滥用。",
+          "s11.b2":"<b>UNESCO / UCL（2026 年 11 月）：</b>33 个模型在组合两项气候政策时得分 <b>33.8%</b>——即随机水平；在用户反驳下，<b>每个受测模型</b>最终都放弃了正确的气候事实。",
+          "s11.b3":"<b>Gartner（预测，2025 年 6 月）：</b>到 2027 年底，超过 40% 的智能体 AI 项目将被取消——成本攀升、价值不清、风险控制不足。",
+          "s11.b4":"<b>漂移：</b>没有单一步骤失败，但结果偏离了意图——See &amp; Spray 的抗性案例（第 6 页）。",
+          "s11.src":"来源：OWASP 智能体 AI 十大风险（2025 年 12 月 9 日发布）· UNESCO《我们能信任 AI 谈气候吗？》，COP31，2026 年 11 月 16 日 · Gartner 新闻稿，2025 年 6 月 25 日——见第 14 页。",
+          "s11.dt":"风险 → 缓解",
+          "s11.d1":"目标劫持<small>被污染的输入操纵智能体</small>","s11.d2":"把所有输入视为不可信<small>在成为指令前先验证</small>",
+          "s11.d3":"工具滥用<small>看似合理但错误的行动</small>","s11.d4":"最小权限范围 + 上限<small>白名单 · 速率与支出限制</small>",
+          "s11.d5":"谄媚<small>模型在反驳下退让</small>","s11.d6":"用经验证的模型核对<small>绝不让聊天机器人独自推理气候政策</small>",
+          "s12.kick":"清单","s12.head":"部署之前",
+          "s12.sub":"五项检查，区分真正的气候行动与气候营销。",
+          "s12.badge":"避免","s12.ph":"出现以下情况就不要上线…",
+          "s12.b1":"百分比<b>没有来源、日期或基线</b>——154 项企业 AI 气候声明中 74% 缺乏可验证证据（Joshi 报告，2026 年 2 月）。",
+          "s12.b2":"收益是<b>毛收益而非净收益</b>，没有扣除 AI 自身的能源与水（第 8 页）。",
+          "s12.b3":"智能体<b>只报警却无人负责响应</b>——MARS 12% 的教训（第 7 页）。",
+          "s12.b4":"模型<b>从未在本地数据</b>、语言或条件下验证过——联合国 TEC 对发展中国家的警告（2025）。",
+          "s12.b5":"在物理系统中<b>无边界地自主运行</b>——没有边界、没有否决、没有日志（第 9 页）。",
+          "s12.src":"来源：Ketan Joshi《AI 气候声明》报告（2026 年 2 月，经 The Outpost）· 联合国 TEC（2025）· UNEP MARS / IEA——见第 14 页。",
+          "s12.dt":"净收益检验",
+          "s12.d1":"实测的气候收益<small>吨 · 立方米 · 生命——带有基线</small>","s12.d2":"实测的 AI 足迹<small>kWh · CO₂e · 升——同一时期</small>","s12.d3":"独立验证<small>非厂商自报 · 以年计而非以周计</small>",
+          "s12.d4":"净收益为正 → 有界部署","s12.d5":"未测量 → 不要宣称",
+          "s13.kick":"总结","s13.head":"潜力真实存在——前提是被引导",
+          "s13.sub":"经同行评审的潜力：到 2035 年，AI 可在电力、食品和交通领域每年减少 3.2–5.4 GtCO₂e——而其自身成本为 0.4–1.6 Gt。潜力不是命运：政策与设计决定结果。",
+          "s13.badge":"行动呼吁","s13.ph":"三项呼吁",
+          "s13.b1":"<b>1 · 资助闭环</b>——探测 → 行动 → 验证——而不是只会报警的演示。",
+          "s13.b2":"<b>2 · 强制计量</b>——每个气候智能体都要按任务报告其收益旁边的 kWh、CO₂e 和升数。",
+          "s13.b3":"<b>3 · 先护栏，后自主</b>——在物理系统中，先有边界、否决、日志、紧急停止。",
+          "s13.note":"<b>记住一句话：</b>“智能体应当赢得自主权——以小步、有界、经验证的方式。”",
+          "s13.src":"来源：Stern 等 / Systemiq + LSE Grantham，《npj Climate Action》，2025 年 6 月 23 日（DOI 10.1038/s44168-025-00252-3）。2026 年 2 月的一篇批评指出，该区间在很大程度上依赖替代蛋白普及假设——应把区间上限视为潜力，而非预测。较早的 Google/BCG“到 2030 年 5–10%”说法（2023）是咨询机构的估算，其计算从未公布。",
+          "s13.dt":"到 2035 年的年潜力——STERN 等（2025）",
+          "s13.h1":"AI 可减少的排放（电力 · 食品 · 交通）","s13.h2":"AI 自身的数据中心排放（同一研究）",
+          "s13.d1":"条形宽度按同一比例显示各区间的上限。两者之间的差距就是机会——而只有当 AI 被有意导向气候、且有公共政策支持时，这个差距才会兑现。",
+          "s14.kick":"来源","s14.head":"来源与未决问题",
+          "s14.sub":"本演示中的每个数字都可追溯到以下来源之一。厂商报告的数字已在各自幻灯片上标注；无法验证的内容在下方公开列出。",
+          "s14.badge":"来源","s14.ph":"按使用顺序",
+          "s14.badge2":"未决问题","s14.ph2":"未验证——如实说明",
+          "s14.q1":"<b>IEA 有两个版本</b>——415→945 TWh（2025 年 4 月报告）与 460→&gt;1,000 TWh（实时页面，2026 年 11 月）。第 8 页采用 2025 年 4 月报告；两者不得混用或取平均。",
+          "s14.q2":"<b>MethaneSAT 数字来自预印本</b>（2026 年 5 月），尚未同行评审，且卫星已于 2025 年 6 月失联——约 60% 的低估应视为初步结论。",
+          "s14.q3":"<b>DeepMind 风电（+20%）</b>是经二手综述转述的公司报告；本演示未重新核验 Google 原始博文。",
+          "s14.q4":"<b>厂商百分比</b>（BrainBox“最高 −25%”、See &amp; Spray 的节省）方向上有佐证，但依赖基线且未经独立审计。",
+          "s14.q5":"<b>峰会细节未指定</b>——未提供名称、日期、场地或视频时长；本演示面向约 12–15 分钟的普通观众视频，可为技术或政策观众重新平衡。",
+          "s14.note":"<b>欢迎质疑：</b>如果任何一页上的数字无法追溯到上述来源，应视为该页有误——请提出质疑。"
+        };
+        for (var k in ZH2) { ZH[k] = ZH2[k]; }
+
+        function setLang(l){
+          lang = l;
+          document.querySelectorAll('[data-k]').forEach(function(el){
+            var key = el.getAttribute('data-k');
+            if (l === 'zh' && ZH[key]) { el.innerHTML = ZH[key]; }
+            else if (enCache[key] !== undefined) { el.innerHTML = enCache[key]; }
+          });
+          document.getElementById('langEn').classList.toggle('on', l === 'en');
+          document.getElementById('langZh').classList.toggle('on', l === 'zh');
+          document.documentElement.lang = l === 'zh' ? 'zh-CN' : 'en';
+          topTitle.textContent = titleFor(cur);
+        }
+        document.getElementById('langEn').addEventListener('click', function(){ setLang('en'); });
+        document.getElementById('langZh').addEventListener('click', function(){ setLang('zh'); });
+
+        var start = 0;
+        var h = parseInt((location.hash || '').replace('#', ''), 10);
+        if (!isNaN(h) && h >= 1 && h <= total) { start = h - 1; }
+        go(start);
+      })();
+    </script>
+  </body>
+</html>
