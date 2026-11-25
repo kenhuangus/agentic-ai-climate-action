@@ -44,9 +44,15 @@
       .slide{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;display:none;padding:30px clamp(16px,4.5vw,68px) 44px;background:#ffffff}
       .slide.active{display:block}
       .slide.light{background:#ffffff}
-      .slide.centered{background:#ffffff;color:var(--ink);flex-direction:column;align-items:center;justify-content:center;text-align:center;padding-top:16px}
-      .slide.centered.active{display:flex}
+      .slide.centered{background:#ffffff;color:var(--ink);text-align:center;padding-top:16px}
+      .slide.centered.active{display:flex;flex-direction:column;align-items:center;justify-content:center}
       .slide.centered>*{position:relative}
+      /* Only the active slide is ever shown on screen. No layout class
+         (centered, light, …) may make an inactive slide visible — this
+         is what let the closing Q&A slide overlay every other slide. */
+      @media screen{
+        .slide:not(.active){display:none !important;visibility:hidden}
+      }
       .kicker{font-family:var(--script);font-weight:700;font-size:clamp(24px,2.6vw,34px);color:var(--orange);line-height:1;margin-bottom:6px}
       h1.head{font-size:clamp(30px,4.3vw,56px);font-weight:800;letter-spacing:-.015em;line-height:1.04;margin:0 0 10px;color:var(--ink)}
       .sub{font-size:clamp(16px,1.7vw,22.5px);color:var(--muted);line-height:1.4;margin:0 0 22px;max-width:1150px;font-weight:500}
